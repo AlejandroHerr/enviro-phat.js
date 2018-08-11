@@ -1,5 +1,15 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "javascript.implicitProjectConfig.checkJs": true,
+  "tslint.enable": true,
+  "editor.formatOnSave": true,
+  //"typescript.tsdk": "node_modules/typescript/lib"
   // "typescript.implementationsCodeLens.enabled": true
   // "typescript.referencesCodeLens.enabled": true
+  "npm-intellisense.importES6": true,
+  "cSpell.words": [
+    "alejandroherr",
+    "cobo",
+    "hernández",
+    "hola"
+  ]
 }

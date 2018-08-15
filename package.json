@@ -72,24 +72,10 @@
     "typedoc": "^0.11.1",
     "typescript": "^3.0.1"
   },
-  "ava": {
-    "failFast": true,
-    "files": [
-      "build/main/**/*.spec.js"
-    ],
-    "sources": [
-      "build/main/**/*.js"
-    ]
-  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
-  },
-  "nyc": {
-    "exclude": [
-      "**/*.spec.js"
-    ]
   },
   "jest": {
     "moduleFileExtensions": [

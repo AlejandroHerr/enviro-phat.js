@@ -4,7 +4,7 @@ test
 src/**.js
 
 coverage
-.nyc_output
+.vscode
 *.log
 
 package-lock.json

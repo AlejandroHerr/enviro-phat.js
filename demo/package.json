@@ -1,0 +1,18 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.5"
+  },
+  "scripts": {
+    "build": "yarn clean && yarn build:demo",
+    "build:demo": "tsc -p ../tsconfig.demo.json",
+    "fix": "yarn fix:*",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:tslint": "tslint --fix --project .",
+    "clean": "rm -rf build"
+  }
+}

@@ -4,7 +4,7 @@ test
 src/**.js
 
 coverage
-.vscode
+.vscode/*
 *.log
 
 package-lock.json

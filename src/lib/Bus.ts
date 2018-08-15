@@ -9,6 +9,9 @@ interface I2cBusPromised extends I2cBus {
   i2cReadAsync: (address: number, length: number, buffer: Buffer) => Promise<number>;
   i2cWriteAsync: (address: number, length: number, buffer: Buffer) => Promise<number>;
 
+  receiveByteAsync: (address: number) => Promise<number>;
+  sendByteAsync: (address: number, byte: number) => Promise<void>;
+
   readByteAsync: (address: number, command: number) => Promise<number>;
   readWordAsync: (address: number, command: number) => Promise<number>;
   readI2cBlockAsync: (address: number, command: number, length: number, buffer: Buffer) => Promise<number>;
@@ -32,6 +35,9 @@ export interface BusInterface {
   i2cRead: (address: number, length: number, buffer: Buffer) => Promise<number>;
   i2cWrite: (address: number, length: number, buffer: Buffer) => Promise<number>;
 
+  receiveByte: (address: number) => Promise<number>;
+  sendByte: (address: number, byte: number) => Promise<void>;
+
   readByte: (address: number, command: number) => Promise<number>;
   readI2cBlock: (address: number, command: number, length: number, buffer: Buffer) => Promise<number>;
   readWord: (address: number, command: number) => Promise<number>;
@@ -47,7 +53,7 @@ export default ({ busNumber = 1, openI2cBus = open } = {}): BusInterface => ({
   isOpen: false,
   openI2cBus,
 
-  open(this: BusInterface) {
+  open() {
     return new Promise((resolve, reject) => {
       this.i2cBus = promisifyAll<I2cBusPromised>(this.openI2cBus(this.busNumber, (error: Error) => {
         if (error) {
@@ -60,14 +66,14 @@ export default ({ busNumber = 1, openI2cBus = open } = {}): BusInterface => ({
     });
   },
 
-  i2cFuncs(this: BusInterface) {
+  i2cFuncs() {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.i2cFuncsAsync();
   },
-  scan(this: BusInterface) {
+  scan() {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
@@ -75,14 +81,14 @@ export default ({ busNumber = 1, openI2cBus = open } = {}): BusInterface => ({
     return this.i2cBus.scanAsync();
   },
 
-  i2cRead(this: BusInterface, address: number, length: number, buffer: Buffer) {
+  i2cRead(address: number, length: number, buffer: Buffer) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.i2cReadAsync(address, length, buffer);
   },
-  i2cWrite(this: BusInterface, address: number, length: number, buffer: Buffer) {
+  i2cWrite(address: number, length: number, buffer: Buffer) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
@@ -90,21 +96,36 @@ export default ({ busNumber = 1, openI2cBus = open } = {}): BusInterface => ({
     return this.i2cBus.i2cWriteAsync(address, length, buffer);
   },
 
-  readByte(this: BusInterface, address: number, command: number) {
+  receiveByte(address: number) {
+    if (!this.i2cBus || !this.isOpen) {
+      throw new Error('Closed');
+    }
+
+    return this.i2cBus.receiveByteAsync(address);
+  },
+  sendByte(address: number, byte: number) {
+    if (!this.i2cBus || !this.isOpen) {
+      throw new Error('Closed');
+    }
+
+    return this.i2cBus.sendByteAsync(address, byte);
+  },
+
+  readByte(address: number, command: number) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.readByteAsync(address, command);
   },
-  readWord(this: BusInterface, address: number, command: number) {
+  readWord(address: number, command: number) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.readWordAsync(address, command);
   },
-  readI2cBlock(this: BusInterface, address: number, command: number, length: number, buffer: Buffer) {
+  readI2cBlock(address: number, command: number, length: number, buffer: Buffer) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
@@ -112,21 +133,21 @@ export default ({ busNumber = 1, openI2cBus = open } = {}): BusInterface => ({
     return this.i2cBus.readI2cBlockAsync(address, command, length, buffer);
   },
 
-  writeByte(this: BusInterface, address: number, command: number, byte: number) {
+  writeByte(address: number, command: number, byte: number) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.writeByteAsync(address, command, byte);
   },
-  writeWord(this: BusInterface, address: number, command: number, word: number) {
+  writeWord(address: number, command: number, word: number) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }
 
     return this.i2cBus.writeWordAsync(address, command, word);
   },
-  writeI2cBlock(this: BusInterface, address: number, command: number, length: number, buffer: Buffer) {
+  writeI2cBlock(address: number, command: number, length: number, buffer: Buffer) {
     if (!this.i2cBus || !this.isOpen) {
       throw new Error('Closed');
     }

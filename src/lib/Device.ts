@@ -7,6 +7,9 @@ export interface DeviceInterface {
   i2cRead: (length: number, buffer: Buffer) => Promise<number>;
   i2cWrite: (length: number, buffer: Buffer) => Promise<number>;
 
+  receiveByte: () => Promise<number>;
+  sendByte: (byte: number) => Promise<void>;
+
   readByte: (command: number) => Promise<number>;
   readI2cBlock: (command: number, length: number, buffer: Buffer) => Promise<number>;
   readWord: (command: number) => Promise<number>;
@@ -20,30 +23,37 @@ export default ({ address, i2cBus }: { address: number; i2cBus: BusInterface }):
   address,
   i2cBus,
 
-  i2cRead(this: DeviceInterface, length: number, buffer: Buffer) {
+  i2cRead(length: number, buffer: Buffer) {
     return this.i2cBus.i2cRead(this.address, length, buffer);
   },
-  i2cWrite(this: DeviceInterface, length: number, buffer: Buffer) {
+  i2cWrite(length: number, buffer: Buffer) {
     return this.i2cBus.i2cWrite(this.address, length, buffer);
   },
 
-  readByte(this: DeviceInterface, command: number) {
+  receiveByte() {
+    return this.i2cBus.receiveByte(this.address);
+  },
+  sendByte(byte: number) {
+    return this.i2cBus.sendByte(this.address, byte);
+  },
+
+  readByte(command: number) {
     return this.i2cBus.readByte(this.address, command);
   },
-  readWord(this: DeviceInterface, command: number) {
+  readWord(command: number) {
     return this.i2cBus.readWord(this.address, command);
   },
-  readI2cBlock(this: DeviceInterface, command: number, length: number, buffer: Buffer) {
+  readI2cBlock(command: number, length: number, buffer: Buffer) {
     return this.i2cBus.readI2cBlock(this.address, command, length, buffer);
   },
 
-  writeByte(this: DeviceInterface, command: number, byte: number) {
+  writeByte(command: number, byte: number) {
     return this.i2cBus.writeByte(this.address, command, byte);
   },
-  writeWord(this: DeviceInterface, command: number, word: number) {
+  writeWord(command: number, word: number) {
     return this.i2cBus.writeWord(this.address, command, word);
   },
-  writeI2cBlock(this: DeviceInterface, command: number, length: number, buffer: Buffer) {
+  writeI2cBlock(command: number, length: number, buffer: Buffer) {
     return this.i2cBus.writeI2cBlock(this.address, command, length, buffer);
   },
 });

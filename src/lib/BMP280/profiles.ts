@@ -1,5 +1,4 @@
 /* tslint:disable:object-literal-sort-keys */
-/* tslint:disable:no-bitwise */
 import {
   CONFIG_FILTER,
   CONFIG_STANDBY,

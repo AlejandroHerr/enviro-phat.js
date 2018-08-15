@@ -8,9 +8,6 @@ import { calculatePressure, calculateTemperature } from './helpers';
 import { PROFILE_PIMORONI } from './profiles';
 
 interface BMP280Interface extends DeviceInterface {
-  address: number;
-  i2cBus: BusInterface;
-
   temperatureCorrection: number[];
   pressureCorrection: number[];
 
@@ -26,7 +23,7 @@ interface BMP280Interface extends DeviceInterface {
   readTemperatureCorrection: () => Promise<BMP280Interface>;
   readPressureCorrection: () => Promise<BMP280Interface>;
 
-  readMagnitude: (this: BMP280Interface, magnitudeRegister: number) => Promise<number>;
+  readMagnitude: (magnitudeRegister: number) => Promise<number>;
   readPressure: () => Promise<number>;
   readTemperature: () => Promise<number>;
 }
@@ -40,11 +37,7 @@ export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInter
     pressureCorrection: [],
     temperatureCorrection: [],
 
-    async init(
-      this: BMP280Interface,
-      config: number = PROFILE_PIMORONI.config,
-      ctrlMeas: number = PROFILE_PIMORONI.ctrlMeas,
-    ) {
+    async init(config: number = PROFILE_PIMORONI.config, ctrlMeas: number = PROFILE_PIMORONI.ctrlMeas) {
       const id = await this.readByte(REGISTERS.ID);
 
       if (id !== ID) {
@@ -66,30 +59,30 @@ export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInter
       return this;
     },
 
-    async reset(this: BMP280Interface) {
+    async reset() {
       await this.writeByte(REGISTERS.RESET, RESET_RESET);
 
       return this;
     },
 
-    readConfig(this: BMP280Interface) {
+    readConfig() {
       return this.readByte(REGISTERS.CONFIG);
     },
-    async writeConfig(this: BMP280Interface, byte: number) {
+    async writeConfig(byte: number) {
       await this.writeByte(REGISTERS.CONFIG, byte);
 
       return this;
     },
-    readControlMeasurement(this: BMP280Interface): Promise<number> {
+    readControlMeasurement(): Promise<number> {
       return this.readByte(REGISTERS.CTRL_MEAS);
     },
-    async writeControlMeasurement(this: BMP280Interface, byte: number): Promise<BMP280Interface> {
+    async writeControlMeasurement(byte: number): Promise<BMP280Interface> {
       await this.writeByte(REGISTERS.CTRL_MEAS, byte);
 
       return this;
     },
 
-    async readTemperatureCorrection(this: BMP280Interface) {
+    async readTemperatureCorrection() {
       const buffer = Buffer.alloc(6);
 
       await this.readI2cBlock(REGISTERS.TEMP_CORRECTION, 6, buffer);
@@ -100,7 +93,7 @@ export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInter
 
       return this;
     },
-    async readPressureCorrection(this: BMP280Interface) {
+    async readPressureCorrection() {
       const buffer = Buffer.alloc(18);
 
       await this.readI2cBlock(REGISTERS.PRESS_CORRECTION, 18, buffer);
@@ -118,14 +111,14 @@ export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInter
       return this;
     },
 
-    async readMagnitude(this: BMP280Interface, magnitudeRegister: number) {
+    async readMagnitude(magnitudeRegister: number) {
       const buffer = Buffer.alloc(3);
 
       await this.readI2cBlock(magnitudeRegister, 3, buffer);
 
       return buffer.readUIntBE(0, 3) >>> 4;
     },
-    async readPressure(this: BMP280Interface) {
+    async readPressure() {
       const rawTemperature = await this.readMagnitude(REGISTERS.TEMP);
       const rawPressure = await this.readMagnitude(REGISTERS.PRESS);
 
@@ -133,7 +126,7 @@ export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInter
 
       return calculatePressure(rawPressure, temperature, this.pressureCorrection);
     },
-    async readTemperature(this: BMP280Interface) {
+    async readTemperature() {
       const rawTemperature = await this.readMagnitude(REGISTERS.TEMP);
 
       const temperature = calculateTemperature(rawTemperature, this.temperatureCorrection);

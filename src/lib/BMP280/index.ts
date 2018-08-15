@@ -7,15 +7,13 @@ import { ID, REGISTERS, RESET_RESET } from './constants';
 import { calculatePressure, calculateTemperature } from './helpers';
 import { PROFILE_PIMORONI } from './profiles';
 
-interface Props {
+interface BMP280Interface extends DeviceInterface {
   address: number;
   i2cBus: BusInterface;
 
   temperatureCorrection: number[];
   pressureCorrection: number[];
-}
 
-interface Methods {
   init: (config?: number, ctrlMeas?: number) => Promise<BMP280Interface>;
 
   reset: () => Promise<BMP280Interface>;
@@ -33,9 +31,7 @@ interface Methods {
   readTemperature: () => Promise<number>;
 }
 
-interface BMP280Interface extends Props, Methods, DeviceInterface {}
-
-export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInterface }) => {
+export default ({ address = 0x77, i2cBus }: { address?: number; i2cBus: BusInterface }): BMP280Interface => {
   const device = Device({ address, i2cBus });
 
   return {

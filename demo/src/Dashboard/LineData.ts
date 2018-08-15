@@ -15,7 +15,7 @@ export interface LineInterface {
   setData: (data: LineDataDescriptorInterface | LineDataDescriptorInterface[]) => void;
 }
 
-export default (title, maxSamples, style = { line: 'red' }): LineDataInterface => ({
+export default (title: string, maxSamples: number, style = { line: 'red' }): LineDataInterface => ({
   style,
   title,
   x: [],
